@@ -2,17 +2,12 @@ package flexUnitTests.net.tw.web.weatherBug
 {
 	import flexUnitTests.utils.SuiteUtils;
 	
-	import flexunit.framework.Assert;
-	
 	import net.tw.web.weatherBug.WeatherBugService;
 	import net.tw.web.weatherBug.loaders.LiveWeatherLoader;
-	import net.tw.web.weatherBug.signals.LiveWeatherLoaded;
-	import net.tw.web.weatherBug.signals.LocationsLoaded;
 	import net.tw.web.weatherBug.vo.LatLng;
 	import net.tw.web.weatherBug.vo.LiveWeather;
+	import net.tw.web.weatherBug.vo.Location;
 	import net.tw.web.weatherBug.vo.LocationType;
-	import net.tw.web.weatherBug.vo.UnitType;
-	import net.tw.web.weatherBug.vo.WeatherBugServiceSettings;
 	
 	import org.flexunit.assertThat;
 	import org.flexunit.asserts.assertTrue;
@@ -47,13 +42,13 @@ package flexUnitTests.net.tw.web.weatherBug
 		
 		[Test(async)]
 		public function testLoadLiveWeatherForZipCode():void {
-			var lwl:LiveWeatherLoader=service.loadLiveWeatherForZipCode('64732');
+			var lwl:LiveWeatherLoader=service.loadLiveWeather(new Location('64732'));
 			proceedOnSignal(this, lwl.loaded, SuiteUtils.ASYNC_TIMEOUT);
 		}
 		
 		[Test(async)]
 		public function testLoadLiveWeatherForZipCode_values_are_correct():void {
-			var lwl:LiveWeatherLoader=service.loadLiveWeatherForZipCode('64732');
+			var lwl:LiveWeatherLoader=service.loadLiveWeather(new Location('64732'));
 			handleSignal(this, lwl.loaded, check_testLoadLiveWeather_values_are_correct, SuiteUtils.ASYNC_TIMEOUT);
 		}
 		protected function check_testLoadLiveWeather_values_are_correct(e:SignalAsyncEvent, data:Object):void {
@@ -65,7 +60,7 @@ package flexUnitTests.net.tw.web.weatherBug
 			
 			assertThat(liveWeather.icon.length, greaterThan(0));
 			assertThat(liveWeather.icon.indexOf('/'), equalTo(-1));
-			assertThat(liveWeather.conditionCode, greaterThan(0));
+			assertThat(liveWeather.conditionCode, isNumber());
 			
 			assertTrue(liveWeather.date<new Date());
 			
@@ -87,10 +82,10 @@ package flexUnitTests.net.tw.web.weatherBug
 			assertThat(liveWeather.temperatureRate, isNumber());
 			
 			assertThat(liveWeather.sourceLocationType, isA(String));
-			if (liveWeather.sourceLocationType==LocationType.GEOLOCATION) {
+			if (liveWeather.sourceLocationType==LocationType.LAT_LNG) {
 				assertThat(liveWeather.sourceLocation, isA(LatLng));
 			} else {
-				assertThat(liveWeather.sourceLocation, isA(String));
+				assertThat(liveWeather.sourceLocation, isA(Location));
 			}
 		}
 		
@@ -109,14 +104,14 @@ package flexUnitTests.net.tw.web.weatherBug
 		[Test(async)]
 		public function testLoadLiveWeatherForCityCode():void {
 			// Bordeaux, France
-			var lwl:LiveWeatherLoader=service.loadLiveWeatherForCityCode('62285');
+			var lwl:LiveWeatherLoader=service.loadLiveWeather(new Location(null, '62285'));
 			proceedOnSignal(this, lwl.loaded, SuiteUtils.ASYNC_TIMEOUT);
 		}
 		
 		[Test(async)]
 		public function testLoadLiveWeatherForGeolocation():void {
 			// Bordeaux, France
-			var lwl:LiveWeatherLoader=service.loadLiveWeatherForGeolocation(new LatLng(44.8536097, -0.5678739));
+			var lwl:LiveWeatherLoader=service.loadLiveWeather(new LatLng(44.8536097, -0.5678739));
 			proceedOnSignal(this, lwl.loaded, SuiteUtils.ASYNC_TIMEOUT);
 		}
 		
@@ -124,7 +119,7 @@ package flexUnitTests.net.tw.web.weatherBug
 		public function testLoadLiveWeatherForGeolocation_values():void {
 			// Bordeaux, France
 			handleSignal(this, service.liveWeatherLoaded, check_testLoadLiveWeather_values_are_correct, SuiteUtils.ASYNC_TIMEOUT);
-			service.loadLiveWeatherForGeolocation(new LatLng(44.8536097, -0.5678739));
+			service.loadLiveWeather(new LatLng(44.8536097, -0.5678739));
 		}
 	}
 }

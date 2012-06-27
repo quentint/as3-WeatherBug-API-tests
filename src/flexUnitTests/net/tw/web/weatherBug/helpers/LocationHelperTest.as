@@ -1,9 +1,6 @@
 package flexUnitTests.net.tw.web.weatherBug.helpers {
-	import flexunit.framework.Assert;
-	
 	import net.tw.web.weatherBug.helpers.LocationHelper;
 	import net.tw.web.weatherBug.vo.LatLng;
-	import net.tw.web.weatherBug.vo.Location;
 	import net.tw.web.weatherBug.vo.LocationType;
 	
 	import org.flexunit.assertThat;
@@ -25,22 +22,22 @@ package flexUnitTests.net.tw.web.weatherBug.helpers {
 		
 		[Test]
 		public function testLocationMatchesSource_LatLng_true():void {
-			assertThat(LocationHelper.locationMatchesSource(new LatLng(11, 22), LocationType.GEOLOCATION, new LatLng(11, 22)), isTrue());
+			assertThat(LocationHelper.locationMatchesSource(new LatLng(11, 22), LocationType.LAT_LNG, new LatLng(11, 22)), isTrue());
 		}
 		[Test]
 		public function testLocationMatchesSource_LatLng_wrong_values():void {
-			assertThat(LocationHelper.locationMatchesSource(new LatLng(11, 22), LocationType.GEOLOCATION, new LatLng(11, 11)), isFalse());
+			assertThat(LocationHelper.locationMatchesSource(new LatLng(11, 22), LocationType.LAT_LNG, new LatLng(11, 11)), isFalse());
 		}
 		[Test]
 		public function testLocationMatchesSource_LatLng_wrong_type_1():void {
-			assertThat(LocationHelper.locationMatchesSource(new LatLng(11, 22), LocationType.GEOLOCATION, 'string'), isFalse());
+			assertThat(LocationHelper.locationMatchesSource(new LatLng(11, 22), LocationType.LAT_LNG, 'string'), isFalse());
 		}
 		[Test]
 		public function testLocationMatchesSource_LatLng_wrong_type_2():void {
-			assertThat(LocationHelper.locationMatchesSource('string', LocationType.GEOLOCATION, new LatLng(11, 22)), isFalse());
+			assertThat(LocationHelper.locationMatchesSource('string', LocationType.LAT_LNG, new LatLng(11, 22)), isFalse());
 		}
 		
-		[Test]
+		/*[Test]
 		public function testLocationMatchesSource_Location_zipCode_true():void {
 			var l1:Location=new Location();
 			l1.zipCode='zipCode';
@@ -98,6 +95,6 @@ package flexUnitTests.net.tw.web.weatherBug.helpers {
 			l1.cityCode='cityCode';
 			var l2:LatLng=new LatLng(1, 1);
 			assertThat(LocationHelper.locationMatchesSource(l1, LocationType.CITY_CODE, l2), isFalse());
-		}
+		}*/
 	}
 }

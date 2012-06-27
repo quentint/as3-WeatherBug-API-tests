@@ -3,7 +3,7 @@ package {
 	
 	import flash.display.Sprite;
 	
-	import flexUnitTests.net.tw.web.weatherBug.WeatherBugLoadForecastTest;
+	import flexUnitTests.WeatherBugTestSuite;
 	
 	import flexunit.flexui.FlexUnitTestRunnerUIAS;
 	
@@ -24,7 +24,7 @@ package {
 		public function currentRunTestSuite():Array
 		{
 			var testsToRun:Array = new Array();
-			testsToRun.push(flexUnitTests.net.tw.web.weatherBug.WeatherBugLoadForecastTest);
+			testsToRun.push(flexUnitTests.WeatherBugTestSuite);
 			return testsToRun;
 		}
 	}

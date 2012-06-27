@@ -1,8 +1,6 @@
 package flexUnitTests.net.tw.web.weatherBug {
 	import flexUnitTests.utils.SuiteUtils;
 	
-	import flexunit.framework.Assert;
-	
 	import net.tw.web.weatherBug.WeatherBugService;
 	import net.tw.web.weatherBug.vo.Forecast;
 	import net.tw.web.weatherBug.vo.ForecastDay;
@@ -14,7 +12,6 @@ package flexUnitTests.net.tw.web.weatherBug {
 	import org.flexunit.asserts.assertTrue;
 	import org.hamcrest.core.isA;
 	import org.hamcrest.number.greaterThan;
-	import org.hamcrest.number.isNumber;
 	import org.hamcrest.object.equalTo;
 	import org.osflash.signals.utils.SignalAsyncEvent;
 	import org.osflash.signals.utils.handleSignal;
@@ -43,40 +40,40 @@ package flexUnitTests.net.tw.web.weatherBug {
 		[Test(async)]
 		public function testLoadForecastForCityCode():void {
 			proceedOnSignal(this, service.forecastLoaded, SuiteUtils.ASYNC_TIMEOUT);
-			service.loadForecastForCityCode('62285');
+			service.loadForecast(new Location(null, '62285'));
 		}
 		
 		[Test(async)]
 		public function testLoadForecastForGeolocation():void {
 			proceedOnSignal(this, service.forecastLoaded, SuiteUtils.ASYNC_TIMEOUT);
-			service.loadForecastForGeolocation(new LatLng(44.8377890, -0.5791800));
+			service.loadForecast(new LatLng(44.8377890, -0.5791800));
 		}
 		
 		[Test(async)]
 		public function testLoadForecastForZipCode():void {
 			proceedOnSignal(this, service.forecastLoaded, SuiteUtils.ASYNC_TIMEOUT);
-			service.loadForecastForZipCode('64732');
+			service.loadForecast(new Location('64732'));
 		}
 		
 		[Test(async)]
 		public function testLoadForecastForZipCode_values_are_correct():void {
 			handleSignal(this, service.forecastLoaded, on_testLoadForecastForZipCode_values_are_correct, SuiteUtils.ASYNC_TIMEOUT);
-			service.loadForecastForZipCode('64732');
+			service.loadForecast(new Location('64732'));
 		}
 		protected function on_testLoadForecastForZipCode_values_are_correct(e:SignalAsyncEvent, data:Object):void {
 			var forecast:Forecast=e.args[0];
 			
 			assertThat(forecast.forecastDays.length, greaterThan(0));
 			assertTrue(forecast.date<new Date());
-			assertThat(forecast.sourceLocation, isA(String));
-			assertThat(forecast.sourceLocation, equalTo('64732'));
-			assertThat(forecast.sourceLocationType, equalTo(LocationType.ZIP_CODE));
+			assertThat(forecast.sourceLocation, isA(Location));
+			assertThat(Location(forecast.sourceLocation).zipCode, equalTo('64732'));
+			assertThat(forecast.sourceLocationType, equalTo(LocationType.LOCATION));
 			
 			assertThat(forecast.sourceLocationType, isA(String));
-			if (forecast.sourceLocationType==LocationType.GEOLOCATION) {
+			if (forecast.sourceLocationType==LocationType.LAT_LNG) {
 				assertThat(forecast.sourceLocation, isA(LatLng));
 			} else {
-				assertThat(forecast.sourceLocation, isA(String));
+				assertThat(forecast.sourceLocation, isA(Location));
 			}
 			
 			var day:ForecastDay;
